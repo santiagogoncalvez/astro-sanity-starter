@@ -17,5 +17,5 @@ Este es mi primer proyecto explorando el ecosistema de **Astro** y **Sanity.io**
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/santiagogoncalvez/astro-sanity-starter.git](https://github.com/santiagogoncalvez/astro-sanity-starter.git)
+   git clone [https://github.com/santiagogoncalvez/astro-sanity-starter.git]
    cd astro-sanity-starter
