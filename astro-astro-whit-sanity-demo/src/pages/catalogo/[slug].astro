@@ -1,48 +1,137 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
-import {
-   createImageUrlBuilder,
-   type SanityImageSource,
-} from "@sanity/image-url";
-import { PortableText } from "astro-portabletext";
+import Layout from "@layouts/Layout.astro";
+import SectionContainer from "@components/shared/SectionContainer.astro";
+import { slugify } from "@utils/slugify";
+import Like from "@/icons/Like.astro";
 
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
-const post = await sanityClient.fetch<SanityDocument>(POST_QUERY, Astro.params);
+export async function getStaticPaths() {
+   const PRODUCTS_QUERY = `*[_type == "product"]{ title }`;
+   const products = await sanityClient.fetch(PRODUCTS_QUERY);
 
-export async function getStaticPaths(): Promise<{ params: { slug: string } }> {
-   const SLUGS_QUERY = `*[_type == "post" && defined(slug.current)]{
-    "params": {"slug": slug.current}
-  }`;
-   return await sanityClient.fetch(SLUGS_QUERY, Astro.params);
+   return products.map((product: any) => ({
+      params: { slug: slugify(product.title) },
+      props: { title: product.title }, // Pasamos el título original para la búsqueda
+   }));
 }
 
-const { projectId, dataset } = sanityClient.config();
-const urlFor = (source: SanityImageSource) =>
-   projectId && dataset
-      ? createImageUrlBuilder({ projectId, dataset }).image(source)
-      : null;
-const postImageUrl = post.image
-   ? urlFor(post.image)?.width(550).height(310).url()
-   : null;
+const { title } = Astro.props;
+const { slug } = Astro.params;
+
+// Buscamos el producto específico por su título exacto
+const PRODUCT_QUERY = `*[_type == "product" && title == $title][0]{
+  title,
+  price,
+  category,
+  "imageUrl": mainImage.asset->url
+}`;
+
+const product = await sanityClient.fetch(PRODUCT_QUERY, { title });
+
+if (!product) return Astro.redirect("/404");
 ---
 
-<main class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-4">
-   <a href="/catalogo" class="hover:underline">&larr; Back to posts</a>
-   {
-      postImageUrl && (
-         <img
-            src={postImageUrl}
-            alt={post.title}
-            class="aspect-video rounded-xl"
-            width="550"
-            height="310"
-         />
-      )
-   }
-   <h1 class="text-4xl font-bold mb-8">{post.title}</h1>
-   <div class="prose">
-      <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
-      {Array.isArray(post.body) && <PortableText value={post.body} />}
-   </div>
-</main>
+<Layout
+   title={`${product.title} | nidotrama`}
+   description={`Detalles de ${product.title}`}
+>
+   <main class="w-full pt-25 xl:pt-24 flex flex-col justify-center">
+      <SectionContainer class="xl:px-12 md:px-8 px-6 pb-16 md:pb-24">
+         <a
+            href="/catalogo"
+            class="group flex items-center gap-x-2 text-sm uppercase tracking-widest hover:opacity-100 transition-opacity mb-12 inline-block"
+         >
+            <span
+               class="group-hover:-translate-x-1 transition-transform duration-300"
+               >←</span
+            >
+            Volver al catálogo
+         </a>
+
+         <div
+            class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start"
+         >
+            <div class="lg:col-span-6 relative group">
+               <div class="overflow-hidden rounded-2xl bg-[#F9F9F9]">
+                  <img
+                     src={product.imageUrl}
+                     alt={product.title}
+                     class="w-full aspect-square md:aspect-[1/1] lg:aspect-square object-cover shadow-sm hover:scale-[1.02] transition-transform duration-700"
+                  />
+               </div>
+
+               <button
+                  class="absolute top-6 right-6 p-4 bg-white backdrop-blur-md rounded-full shadow-md hover:scale-110 transition-all text-text-base hover:cursor-pointer"
+                  aria-label="Agregar a favoritos"
+               >
+                  <Like class="size-6" />
+               </button>
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col pt-4">
+               <span
+                  class="text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-4 block"
+               >
+                  {product.category}
+               </span>
+
+               <h1
+                  class="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-title-primary mb-4"
+               >
+                  {product.title}
+               </h1>
+
+               <p
+                  class="text-2xl md:text-3xl font-light text-title-primary/80 mb-10"
+               >
+                  ${product.price}
+               </p>
+
+               <div class="h-[1px] w-full bg-neutral-100 mb-10"></div>
+
+               <div class="space-y-6 mb-12">
+                  <h3
+                     class="text-xs font-bold uppercase tracking-widest text-text-base"
+                  >
+                     Detalles de la pieza
+                  </h3>
+                  <div
+                     class="prose prose-neutral text-text-base leading-relaxed max-w-none"
+                  >
+                     <p>
+                        Cada <strong>{product.title}</strong> es una pieza única,
+                        tejida artesanalmente bajo el concepto de "nido". Utilizamos
+                        técnicas de crochet y dos agujas para lograr una textura táctil
+                        que invita al refugio y al confort.
+                     </p>
+                     <ul class="text-sm space-y-2 list-none p-0 mt-6">
+                        <li class="flex items-center gap-2">
+                           <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"
+                           ></span>
+                           Materiales naturales seleccionados
+                        </li>
+                        <li class="flex items-center gap-2">
+                           <span class="w-1.5 h-1.5 rounded-full bg-neutral-300"
+                           ></span>
+                           Hecho 100% a mano por Jorgelina Reales
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+
+               <button
+                  onclick={`window.open('https://wa.me/TUNUMERO?text=Hola Jorgelina! Me encantó el ${product.title}. ¿Está disponible?', '_blank')`}
+                  class="w-full py-5 bg-cta text-white text-xs font-bold uppercase tracking-[0.2em] rounded-xl
+         hover:bg-cta/95 active:scale-[0.98] transition-all duration-300 hover:cursor-pointer"
+               >
+                  Consultar Disponibilidad
+               </button>
+
+               <p class="text-[10px] text-center text-neutral-400 mt-4 italic">
+                  Al ser piezas artesanales, el tiempo de entrega puede variar.
+               </p>
+            </div>
+         </div>
+      </SectionContainer>
+   </main>
+</Layout>
