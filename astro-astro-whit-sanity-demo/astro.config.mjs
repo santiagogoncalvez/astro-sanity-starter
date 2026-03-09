@@ -30,6 +30,7 @@ export default defineConfig({
          "@styles": path.resolve("./src/styles"),
          "@scripts": path.resolve("./src/scripts"),
          "@constants": path.resolve("./src/constants"),
+         "@layouts": path.resolve("./src/layouts"),
       },
    },
 });

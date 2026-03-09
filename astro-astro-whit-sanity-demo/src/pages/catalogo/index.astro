@@ -10,20 +10,26 @@ const POSTS_QUERY = `*[
 const posts = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
 
 // console.log("Mis posts desde Sanity:", posts);
+import Layout from "@layouts/Layout.astro";
+import SectionContainer from "@components/shared/SectionContainer.astro";
 ---
 
-<main class="container mx-auto min-h-screen max-w-3xl p-8">
-   <h1 class="text-4xl font-bold mb-8">Posts</h1>
-   <ul class="flex flex-col gap-y-4">
-      {
-         posts.map((post) => (
-            <li class="hover:underline">
-               <a href={`/posts/${post.slug.current}`}>
-                  <h2 class="text-xl font-semibold">{post.title}</h2>
-                  <p>{new Date(post.publishedAt).toLocaleDateString()}</p>
-               </a>
-            </li>
-         ))
-      }
-   </ul>
-</main>
+<!-- TODO: personalizar con titulo y descripción específicos para la página -->
+<Layout title="" description="">
+   <main class="w-full pt-25 xl:pt-20 flex flex-col justify-center">
+      <SectionContainer class="xl:px-12 md:px-8 px-6 pb-16 md:pb-24">
+         <ul class="flex flex-col gap-y-4">
+            {
+               posts.map((post) => (
+                  <li class="hover:underline">
+                     <a href={`/catalogo/${post.slug.current}`}>
+                        <h2 class="text-xl font-semibold">{post.title}</h2>
+                        <p>{new Date(post.publishedAt).toLocaleDateString()}</p>
+                     </a>
+                  </li>
+               ))
+            }
+         </ul>
+      </SectionContainer>
+   </main>
+</Layout>
