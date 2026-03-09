@@ -1,0 +1,74 @@
+---
+import PrincipalTitle from "./PrincipalTitle.astro";
+import HeroDescription from "./HeroDescription.astro";
+---
+
+<section
+   class="relative min-h-[85vh] flex items-center bg-bg-base overflow-hidden"
+>
+   <div
+      class="container mx-auto flex flex-col md:flex-row items-center justify-between z-10"
+   >
+      <div class="w-full md:w-[40rem] order-2 md:order-1">
+         <PrincipalTitle />
+         <HeroDescription />
+
+         <div class="flex items-center gap-10">
+            <a
+               href="/catalogo"
+               class="bg-cta text-cta-text px-10 py-4 rounded-full font-body font-medium text-lg hover:bg-title-primary transition-all duration-500"
+            >
+               Explorar catálogo
+            </a>
+
+            <a
+               href="#proceso"
+               class="group flex items-center gap-2 text-sm uppercase tracking-[0.3em] text-title-primary/70 font-medium"
+            >
+               proceso
+            </a>
+         </div>
+      </div>
+
+      <div
+         class="relative w-full md:w-[50%] flex justify-center md:justify-end order-1 md:order-2"
+      >
+         <div
+            class="relative w-[85%] aspect-[1/1] overflow-hidden
+                  rounded-[120px_40px_160px_60px]"
+         >
+            <img
+               src="/hero-ambiente-2.jpg"
+               class="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-1000 scale-100"
+               alt="Home Decor"
+            />
+         </div>
+
+         <div
+            class="absolute bottom-0 -left-4 md:left-0 w-44 h-44 md:w-50 md:h-50 animate-nido-slow"
+         >
+            <img
+               src="/producto-detalle-2.png"
+               class="w-full h-full object-contain"
+               alt="Detalle del tejido"
+            />
+         </div>
+      </div>
+   </div>
+</section>
+
+<style>
+   /* Animación más lenta y sutil (8s) para mayor elegancia */
+   @keyframes nido-slow {
+      0%,
+      100% {
+         transform: translate(0, 0) rotate(0deg);
+      }
+      50% {
+         transform: translate(-10px, -12px) rotate(2deg);
+      }
+   }
+   .animate-nido-slow {
+      animation: nido-slow 10s ease-in-out infinite;
+   }
+</style>

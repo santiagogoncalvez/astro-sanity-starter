@@ -1,0 +1,250 @@
+---
+import Logo from "./Logo.astro";
+import Menu from "@icons/Menu.astro";
+import X from "@icons/X.astro"; // Importamos el icono de cruz
+import CtaButton from "./CtaButton.astro";
+import Like from "@/icons/Like.astro";
+import Search from "@/icons/Search.astro";
+
+const navItems = [
+   // TODO: personalizar con la cantidad de secciones o enlaces de página
+   {
+      title: "Catálogo",
+      // el label debe coincidir con el id de la sección
+      label: "catalogo",
+      url: "/catalogo",
+   },
+   {
+      title: "Concepto",
+      // el label debe coincidir con el id de la sección
+      label: "concepto",
+      url: "/#concepto",
+   },
+   {
+      title: "A Medida",
+      // el label debe coincidir con el id de la sección
+      label: "a-medida",
+      url: "/#a-medida",
+   },
+   {
+      title: "Proceso",
+      // el label debe coincidir con el id de la sección
+      label: "proceso",
+      url: "/#proceso",
+   },
+   {
+      title: "Contacto",
+      // el label debe coincidir con el id de la sección
+      label: "contacto",
+      url: "/#contacto",
+   },
+];
+---
+
+<header
+   id="header"
+   class="fixed top-0 inset-x-0 z-50
+    xl:px-12 md:px-8 px-6
+    bg-bg-base backdrop-blur-sm
+    transition-all duration-300 flex justify-center"
+>
+   <div class="flex items-center justify-between py-4 w-full max-w-screen-2xl">
+      <div class="hidden xl:flex w-full items-center justify-between">
+         <div class="flex items-center gap-10">
+            <Logo />
+            <nav class="flex items-center gap-1">
+               {
+                  navItems.map((link) => (
+                     <a
+                        href={link.url}
+                        aria-label={link.label}
+                        class="nav-link relative px-3 py-1  text-title-secondary transition-colors duration-300 hover:text-title-primary text-base"
+                     >
+                        {link.title}
+                     </a>
+                  ))
+               }
+            </nav>
+         </div>
+
+         <div class="flex gap-8">
+            <div class="flex gap-6 items-center justify-center">
+               <Search class="size-6" />
+               <Like class="size-6" />
+            </div>
+         </div>
+      </div>
+
+      <div
+         class="flex xl:hidden w-full items-center justify-between relative z-[60]"
+      >
+         <Logo id="mobile-logo-link" />
+         <button
+            id="mobile-menu-btn"
+            aria-label="Menu"
+            class="h-10 w-10 flex items-center justify-center rounded-none text-title-primary bg-transparent hover:cursor-pointer"
+         >
+            <div id="menu-icon-open"><Menu class="size-8" /></div>
+            <div id="menu-icon-close" class="hidden"><X class="size-8" /></div>
+         </button>
+      </div>
+   </div>
+
+   <div
+      id="mobile-menu"
+      class="fixed inset-0 w-screen h-screen bg-bg-base z-[55] hidden flex-col p-6 transition-all"
+   >
+      <div class="h-20"></div>
+
+      <nav class="flex flex-col gap-8 items-center">
+         {
+            navItems.map((link) => (
+               <a
+                  href={link.url}
+                  aria-label={link.label}
+                  class="nav-link-mobile text-title-secondary pb-4 w-full text-base"
+               >
+                  {link.title}
+               </a>
+            ))
+         }
+         <CtaButton
+            class="w-full justify-center py-4 lg:text-lg md:text-base text-sm"
+         />
+      </nav>
+   </div>
+</header>
+
+<style>
+   .nav-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      transition: color 400ms ease;
+   }
+
+   /* El "punto de autoridad" o diamante sutil arriba del texto */
+   .nav-link::before {
+      content: "•";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      color: var(--color-accent-primary);
+      font-size: 1rem;
+      opacity: 0;
+      transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+   }
+
+   /* Efecto al pasar el mouse */
+   .nav-link:hover {
+      color: var(--color-title-primary);
+   }
+
+   .nav-link:hover::before,
+   .nav-link.active::before {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+   }
+
+   :global(body.overflow-hidden) {
+      overflow: hidden;
+   }
+</style>
+
+<script>
+   const initNavScroll = () => {
+      const header = document.getElementById("header");
+      const links = document.querySelectorAll(".nav-link");
+      const sections = document.querySelectorAll("section[id]");
+
+      if (!header || !links.length) return;
+
+      const normalize = (str: string) =>
+         str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      const setActiveLink = (id: string | null) => {
+         links.forEach((link) => {
+            const label = normalize(link.getAttribute("aria-label") || "");
+            const isTarget = id !== null && label === id;
+            link.classList.toggle("active", isTarget);
+            link.classList.toggle("text-title-primary", isTarget);
+         });
+      };
+
+      const visibleSections = new Map();
+      const observerOptions = {
+         rootMargin: "-20% 0px -70% 0px",
+         threshold: 0,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+         entries.forEach((entry) => {
+            visibleSections.set(entry.target.id, entry.isIntersecting);
+         });
+
+         if (window.scrollY < 100) {
+            setActiveLink(null);
+            return;
+         }
+
+         const activeId = Array.from(visibleSections.entries()).find(
+            ([_, isVisible]) => isVisible,
+         )?.[0];
+
+         if (activeId) {
+            setActiveLink(normalize(activeId));
+         }
+      }, observerOptions);
+
+      sections.forEach((section) => observer.observe(section));
+   };
+
+   const initMobileMenu = () => {
+      const btn = document.getElementById("mobile-menu-btn");
+      const menu = document.getElementById("mobile-menu");
+      const logoLink = document.getElementById("mobile-logo-link");
+      const iconOpen = document.getElementById("menu-icon-open");
+      const iconClose = document.getElementById("menu-icon-close");
+      const body = document.body;
+      const links = document.querySelectorAll(".nav-link-mobile");
+
+      const closeMenu = () => {
+         menu?.classList.add("hidden");
+         menu?.classList.remove("flex");
+         body.classList.remove("overflow-hidden");
+         iconOpen?.classList.remove("hidden");
+         iconClose?.classList.add("hidden");
+      };
+
+      btn?.addEventListener("click", () => {
+         const isHidden = menu?.classList.contains("hidden");
+         if (isHidden) {
+            menu?.classList.remove("hidden");
+            menu?.classList.add("flex");
+            body.classList.add("overflow-hidden");
+            iconOpen?.classList.add("hidden");
+            iconClose?.classList.remove("hidden");
+         } else {
+            closeMenu();
+         }
+      });
+
+      // Cerrar al clickear cualquier link del menu
+      links.forEach((link) => {
+         link.addEventListener("click", closeMenu);
+      });
+
+      // Cerrar al clickear el logo
+      logoLink?.addEventListener("click", closeMenu);
+   };
+
+   document.addEventListener("DOMContentLoaded", () => {
+      initNavScroll();
+      initMobileMenu();
+   });
+   document.addEventListener("astro:after-swap", () => {
+      initNavScroll();
+      initMobileMenu();
+   });
+</script>

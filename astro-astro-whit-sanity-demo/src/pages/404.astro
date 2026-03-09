@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SectionContainer from "../components/shared/SectionContainer.astro";
+---
+<!-- TODO: personalizar página 404. -->
+<Layout
+   title="404 — Página no encontrada"
+   description="El enlace puede estar mal escrito o la página fue movida."
+>
+   <meta slot="head" name="robots" content="noindex" />
+
+   <main
+      class="flex items-center justify-center pt-25 xl:pt-32 xl:px-30 md:px-10 px-6 pb-16 md:pb-24"
+   >
+      <SectionContainer class="flex flex-col items-center text-center">
+         
+      </SectionContainer>
+   </main>
+</Layout>

@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  /* =========================
+     FONDOS (Escala de Blancos Lana y Arena)
+     ========================= */
+
+  --color-bg-base: #FDFBF8;     /* Lanolin White: Fondo principal, calma pura */
+  --color-bg-surface: #FDFBF8;  /* Mantenemos el blanco lana para consistencia */
+  --color-bg-elevated: #F2EDE4; /* Sand Nest: Fondo para las cards de productos */
+  --color-bg-subtle: #F2EDE4;   /* Separadores o bloques de manifiesto */
+
+  /* =========================
+     TEXTO (Escala de Marrones Orgánicos)
+     ========================= */
+
+  --color-title-primary: #3D2B1F;   /* Dark Cocoa: H1, Logo y títulos de impacto */
+  --color-title-secondary: #3D2B1F; /* H2 / H3: Autoridad artesanal */
+  
+  --color-text-base: #5C544E;     /* Taupe Texture: Texto body, suave al ojo */
+  --color-text-muted: #8B735B;    /* Soft Jute: Para bajadas o descripciones cortas */
+  --color-text-dimmed: #8B735B;   /* Metadata, etiquetas de "Pieza Única" */
+
+  /* =========================
+     ACCIÓN / MARCA (Contraste Máximo)
+     ========================= */
+
+  --color-accent-primary: #3D2B1F;   /* Dark Cocoa para links y énfasis */
+  --color-accent-secondary: #8B735B; /* Soft Jute para detalles decorativos o iconos */
+
+  --color-cta: #3D2B1F;              /* Dark Cocoa: El botón que resalta 100% */
+  --color-cta-hover: #2A1D15;        /* Un marrón un toque más oscuro para el hover */
+  --color-cta-text: #FDFBF8;         /* Lanolin White para el texto del botón */
+
+  /* =========================
+     BORDES Y DETALLES
+     ========================= */
+
+  --color-border-subtle: #F2EDE4;    /* Bordes casi invisibles para cards */
+  --color-border-strong: #8B735B;    /* Bordes de foco o líneas decorativas (Soga/Jute) */
+
+  /* =========================
+     ESTADOS
+     ========================= */
+
+  --color-focus-ring: #8B735B;       /* Anillo de foco en color yute */
+}

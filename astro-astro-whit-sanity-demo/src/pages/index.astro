@@ -1,17 +1,14 @@
 ---
-
+import Layout from "../layouts/Layout.astro";
+import SectionContainer from "../components/shared/SectionContainer.astro";
+import Hero from "@/components/sections/Hero/Hero.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<!-- TODO: personalizar con titulo y descripción específicos para la página -->
+<Layout title="" description="">
+   <main class="w-full pt-25 xl:pt-20 flex flex-col justify-center">
+      <SectionContainer class="xl:px-12 md:px-8 px-6 pb-16 md:pb-24">
+         <Hero/>
+      </SectionContainer>
+   </main>
+</Layout>
